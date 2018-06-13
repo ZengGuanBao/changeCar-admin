@@ -31,7 +31,7 @@ export default {
     initMalSysMessageStore() {
       let _this = this;
       this.$get(
-        "/userCenter/" + this.page.pageNum + "/" + this.page.pageSize
+        "/userCenter/web/" + this.page.pageNum + "/" + this.page.pageSize
       ).then(res => {
         console.log(res);
         _this.tableData1 = res.data.list;
