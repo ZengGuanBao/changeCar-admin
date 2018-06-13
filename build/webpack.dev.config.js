@@ -33,8 +33,7 @@ module.exports = merge(webpackBaseConfig, {
             filename: '../index.html',
             inject: false
         }),
-        new CopyWebpackPlugin([
-            {
+        new CopyWebpackPlugin([{
                 from: 'src/views/main-components/theme-switch/theme'
             },
             {
@@ -47,7 +46,7 @@ module.exports = merge(webpackBaseConfig, {
         })
     ],
     devServer: {
-        port: 81,
+        port: 8001,
         historyApiFallback: true,
         hot: true,
         inline: true,
@@ -58,7 +57,7 @@ module.exports = merge(webpackBaseConfig, {
                 // 目标服务器地址
                 target: 'http://193.112.160.227:80',
                 //路径重写
-                pathRewrite: {'^/api' : '/api'},
+                pathRewrite: { '^/api': '/api' },
                 changeOrigin: true
             }
         }

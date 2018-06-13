@@ -56,13 +56,14 @@
 /* eslint-disable */
 import moment from 'moment';
 export default {
-  name: 'adsmanager',
+  name: 'systemmessage',
   data () {
     return {
+      file: null,
       addMalSysMessageModal: false,
       putMalSysMessageModal: false,
       addMalSysMessage: {
-        activatetime: new Data(),
+        activatetime: new Date(),
         content: "string",
         icatid: "NORMAL",
         isSend: 1,
@@ -73,7 +74,7 @@ export default {
         sendId: 6294,
         sendName: "系统管理员",
         status: false,
-        sysDate: new Data(),
+        sysDate: new Date(),
         sysImage: "string",
         title: "系统消息"
       },
@@ -179,7 +180,7 @@ export default {
                     let _this = this;
                     this.$del('/malSysMessage/' + params.row.msgid)
                       .then(res => {
-                        _this.initMalAdStore();
+                        _this.initMalSysMessageStore();
                       });
                   }
                 }
@@ -193,6 +194,10 @@ export default {
   methods: {
     handleAdd () {
       //this.$router.push('/shortcut')
+    },
+    handleUpload (file) {
+      this.file = file;
+      return false;
     },
     changePage (index) {
       this.page.pageNum = index;
@@ -212,16 +217,17 @@ export default {
       this.$post('/malSysMessage', this.addMalSysMessage)
         .then(res => {
           console.log(res);
-          _this.initMalAdStore();
+          _this.initMalSysMessageStore();
         });
     },
     addOk () {
       this.addSubmits();
     },
     putSubmits () {
-      this.$put('/malSysMessage/' + params.row.adId, _this.putMalSysMessage)
+      let _this = this;
+      this.$put('/malSysMessage/' + _this.putMalSysMessage.msgid, _this.putMalSysMessage)
         .then(res => {
-          _this.initMalAdStore();
+          _this.initMalSysMessageStore();
         });
     },
     putOk () {

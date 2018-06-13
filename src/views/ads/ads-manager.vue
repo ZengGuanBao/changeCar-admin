@@ -53,7 +53,7 @@
         </div>
         <div>
           <Modal v-model="putMalAdModal" title="修改广告" @on-ok="putOk" >
-            <Form :model="putMalAdModal" label-position="left" :label-width="100">
+            <Form :model="putMalAd" label-position="left" :label-width="100">
                 <FormItem label="广告类型">
                     <Input v-model="putMalAd.adType"></Input>
                 </FormItem>
@@ -240,7 +240,8 @@ export default {
       this.addSubmits()
     },
     putSubmits () {
-      this.$put('/malAd/' + params.row.adId, _this.putMalAd)
+      let _this = this;
+      this.$put('/malAd/' + _this.putMalAd.adId, _this.putMalAd)
         .then(res => {
           _this.initMalAdStore();
         });
