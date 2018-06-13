@@ -7,23 +7,20 @@
             <Button @click="addMalSysMessageModal = true" type="success" href="javascipt:;">新增</Button>
         </div>
         <div>
-          <Modal v-model="addMalSysMessageModal" title="发送系统消息" @on-ok="addOk" >
+          <Modal v-model="addMalSysMessageModal" title="发送系统消息" @on-ok="addOk" ok-text="发送">
             <Form :model="addMalSysMessage" label-position="left" :label-width="100">
                 <FormItem label="标题">
                     <Input v-model="addMalSysMessage.title"></Input>
                 </FormItem>
                 <FormItem label="图片">
-                    <Input v-model="addMalSysMessage.sort"></Input>
+                    <Upload :before-upload="handleUpload" action="/api/file">
+                        <Button type="ghost" icon="ios-cloud-upload-outline">上传图片</Button>
+                        <div v-if="file !== null">Upload file: {{ addMalSysMessage.sysImage = file.name }}</div>
+                    </Upload>
+                </FormItem>  
+                <FormItem label="内容">
+                    <Input v-model="addMalSysMessage.content"></Input>
                 </FormItem>               
-                <FormItem label="排序">
-                    <!-- <Input v-model="addMalSysMessage.sort"></Input> -->
-                </FormItem>
-                <FormItem label="是否显示">
-                    <Input v-model="addMalSysMessage.status"></Input>
-                </FormItem>
-                <FormItem label="创建时间">
-                    <Input v-model="addMalSysMessage.activatetime"></Input>
-                </FormItem>
             </Form>
           </Modal>
         </div>
@@ -35,6 +32,24 @@
                 </div>
             </div>
         </div>
+        <div>
+          <Modal v-model="putMalSysMessageModal" title="修改系统消息" @on-ok="putOk" >
+            <Form :model="putMalSysMessage" label-position="left" :label-width="100">
+                <FormItem label="标题">
+                    <Input v-model="putMalSysMessage.title"></Input>
+                </FormItem>
+                <FormItem label="图片">
+                    <Upload :before-upload="handleUpload" action="/api/file">
+                        <Button type="ghost" icon="ios-cloud-upload-outline">上传图片</Button>
+                        <div v-if="file !== null">Upload file: {{ putMalSysMessage.sysImage = file.name }}</div>
+                    </Upload>
+                </FormItem>  
+                <FormItem label="内容">
+                    <Input v-model="putMalSysMessage.content"></Input>
+                </FormItem>               
+            </Form>
+          </Modal>
+        </div>
     </div>
 </template>
 <script>
@@ -45,7 +60,24 @@ export default {
   data () {
     return {
       addMalSysMessageModal: false,
+      putMalSysMessageModal: false,
       addMalSysMessage: {
+        activatetime: new Data(),
+        content: "string",
+        icatid: "NORMAL",
+        isSend: 1,
+        msgid: 0,
+        readstatus: true,
+        receiveId: 6294,
+        receiveName: "系统管理员",
+        sendId: 6294,
+        sendName: "系统管理员",
+        status: false,
+        sysDate: new Data(),
+        sysImage: "string",
+        title: "系统消息"
+      },
+      putMalSysMessage: {
         activatetime: "2018-06-13T02:36:13.999Z",
         content: "string",
         icatid: "NORMAL",
@@ -85,6 +117,18 @@ export default {
           key: 'title'
         },
         {
+          title: '创建时间',
+          key: 'sysDate'
+        },
+        {
+          title: '是否已读',
+          key: 'readstatus'
+        },
+        {
+          title: '用户类型',
+          key: 'readstatus'
+        },
+        {
           title: '消息图片',
           key: 'sysImage'
         },
@@ -105,6 +149,26 @@ export default {
           width: 150,
           render: (h, params) => {
             return h('div', [
+              h('Button', {
+                props: {
+                  type: 'primary',
+                  size: 'small',
+                },
+                style: {
+                  marginRight: '5px'
+                },
+                on: {
+                  click: () => {
+                    this.putMalSysMessageModal = true;
+                    let _this = this;
+                    this.$get('/malSysMessage/' + params.row.msgid)
+                      .then(res => {
+                        _this.putMalSysMessage = res.data
+                        console.log(_this.putMalSysMessage)
+                      });
+                  }
+                },
+              }, '修改'),
               h('Button', {
                 props: {
                   type: 'error',
@@ -135,7 +199,7 @@ export default {
     },
     initMalSysMessageStore () {
       let _this = this;
-      this.$get('/malSysMessage/' + this.page.pageNum + '/' + this.page.pageSize, this.params)
+      this.$get('/malSysMessage/' + this.page.pageNum + '/' + this.page.pageSize)
         .then(res => {
           console.log(res);
           _this.tableData1 = res.data.list;
@@ -143,12 +207,29 @@ export default {
           console.log(_this.tableData1)
         });
     },
+    addSubmits () {
+      let _this = this;
+      this.$post('/malSysMessage', this.addMalSysMessage)
+        .then(res => {
+          console.log(res);
+          _this.initMalAdStore();
+        });
+    },
     addOk () {
-      
-    }
+      this.addSubmits();
+    },
+    putSubmits () {
+      this.$put('/malSysMessage/' + params.row.adId, _this.putMalSysMessage)
+        .then(res => {
+          _this.initMalAdStore();
+        });
+    },
+    putOk () {
+      this.putSubmits()
+    },
   },
   created () {
-    this.initMalSysMessageStore()
+    this.initMalSysMessageStore();
   }
 }
 </script>

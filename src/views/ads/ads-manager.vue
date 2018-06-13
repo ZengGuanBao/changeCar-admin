@@ -7,8 +7,30 @@
             <Button @click="addMalAdModal = true" type="success" href="javascipt:;">新增</Button>
         </div>
         <div>
-          <Modal v-model="addMalAdModal" title="新增广告" @on-ok="addOk" >
+          <Modal v-model="addMalAdModal" title="新增广告" @on-ok="addOk" ok-text="添加">
             <Form :model="addMalAd" label-position="left" :label-width="100">
+                <FormItem label="广告类型">
+                    <Input v-model="addMalAd.adType"></Input>
+                </FormItem>
+                <FormItem label="adTypeStr">
+                    <Input v-model="addMalAd.adTypeStr"></Input>
+                </FormItem>
+                <FormItem label="内容">
+                    <Input v-model="addMalAd.content"></Input>
+                </FormItem>
+                <FormItem label="链接地址">
+                    <Input v-model="addMalAd.urlLink"></Input>
+                </FormItem>
+                <FormItem label="排序">
+                    <Input v-model="addMalAd.sn"></Input>
+                </FormItem>
+                <FormItem label="用户类型">
+                    <Input v-model="addMalAd.icatid"></Input>
+                </FormItem>
+                <FormItem label="是否隐藏">
+                  <Switch v-model="addMalAd.status" @on-change="changeSwitch"></Switch>
+                  <!-- <Input v-model="putMalAd.status""></Input> -->
+                </FormItem>
                 <FormItem label="标题">
                     <Input v-model="addMalAd.title"></Input>
                 </FormItem>
@@ -17,15 +39,7 @@
                         <Button type="ghost" icon="ios-cloud-upload-outline">上传图片</Button>
                         <div v-if="file !== null">Upload file: {{ addMalAd.sysImage = file.name }}</div>
                     </Upload>
-                    <!-- <Input v-model="malAd.sort"></Input> -->
                 </FormItem>               
-                <FormItem label="排序">
-                    <Input v-model="addMalAd.sort"></Input>
-                </FormItem>
-                <FormItem label="是否显示">
-                  <Switch v-model="addMalAd.status" @on-change="changeSwitch"></Switch>
-                  <!-- <Input v-model="malAd.isshow"></Input> -->
-                </FormItem>
             </Form>
           </Modal>
         </div>
@@ -40,22 +54,37 @@
         <div>
           <Modal v-model="putMalAdModal" title="修改广告" @on-ok="putOk" >
             <Form :model="putMalAdModal" label-position="left" :label-width="100">
-                <FormItem label="标题">
-                    <Input v-model="putMalAd.title"></Input>
+                <FormItem label="广告类型">
+                    <Input v-model="putMalAd.adType"></Input>
+                </FormItem>
+                <FormItem label="adTypeStr">
+                    <Input v-model="putMalAd.adTypeStr"></Input>
+                </FormItem>
+                <FormItem label="内容">
+                    <Input v-model="putMalAd.content"></Input>
+                </FormItem>
+                <FormItem label="链接地址">
+                    <Input v-model="putMalAd.urlLink"></Input>
+                </FormItem>
+                <FormItem label="排序">
+                    <Input v-model="putMalAd.sn"></Input>
+                </FormItem>
+                <FormItem label="用户类型">
+                    <Input v-model="putMalAd.icatid"></Input>
+                </FormItem>
+                <FormItem label="是否隐藏">
+                  <Switch v-model="putMalAd.status" @on-change="changeSwitch"></Switch>
+                  <!-- <Input v-model="putMalAd.status""></Input> -->
                 </FormItem>
                 <FormItem label="图片">
                     <Upload :before-upload="handleUpload" action="/api/file">
                         <Button type="ghost" icon="ios-cloud-upload-outline">上传图片</Button>
-                        <div v-if="file !== null">Upload file: {{ addMalAd.sysImage = file.name }}</div>
+                        <div v-if="file !== null">Upload file: {{ putMalAd.sysImage = file.name }}</div>
                     </Upload>
                     <!-- <Input v-model="malAd.sort"></Input> -->
-                </FormItem>               
-                <FormItem label="排序">
-                    <Input v-model="putMalAd.sort"></Input>
                 </FormItem>
-                <FormItem label="是否显示">
-                  <!-- <Switch v-model="putMalAd.status" @on-change="changeSwitch"></Switch> -->
-                  <!-- <Input v-model="putMalAd.status""></Input> -->
+                <FormItem label="标题">
+                    <Input v-model="putMalAd.title"></Input>
                 </FormItem>
             </Form>
           </Modal>
@@ -73,16 +102,17 @@ export default {
       addMalAdModal: false,
       putMalAdModal: false,
       addMalAd: {
-        adId: 0,
-        adType: "string",
-        adTypeStr: "string",
-        content: "string",
-        icatid: "NORMAL",
-        sn: 0,
-        status: true,
-        sysDate: "",
-        sysImage: "",
-        title: ""
+        adId:0,
+        adType:"",
+        adTypeStr:"",
+        content:"",
+        icatid:"NORMAL",
+        sn:0,
+        status:false,
+        sysDate:new Date(),
+        sysImage:"cd199346-3ff-47d9-a67d-db607382765c.jpeg",
+        title:"",
+        urlLink: ""
       },
       putMalAd: {
         adId:4,
@@ -94,7 +124,8 @@ export default {
         status:false,
         sysDate:1528812280000,
         sysImage:"cd199346-3fff-47d9-a67d-db607382765c.jpeg",
-        title:"第二广告"
+        title:"第二广告",
+        urlLink: "string"
       },
       page: {
         pageNum: 1,
@@ -160,7 +191,6 @@ export default {
                       .then(res => {
                         _this.putMalAd = res.data
                         console.log(_this.putMalAd)
-                        _this.initMalAdStore();
                       });
                   }
                 },
@@ -194,12 +224,13 @@ export default {
     changePage (index) {
       this.page.pageNum = index;
     },
-    changeSwitch () {
-
+    changeSwitch (status) {
+      this.addMalAd.status = status;
+      this.putMalAd.status = status;
     },
     addSubmits () {
       let _this = this;
-      this.$post('/malAd', this.malAd)
+      this.$post('/malAd', this.addMalAd)
         .then(res => {
           console.log(res);
           _this.initMalAdStore()
@@ -216,11 +247,6 @@ export default {
     },
     putOk () {
       this.putSubmits()
-    },
-    changePage (index) {
-      // The simulated data is changed directly here, and the actual usage scenario should fetch the data from the server
-      // this.tableData1 = this.mockTableData1();
-      this.page.pageNum = index;
     },
     initMalAdStore () {
       let _this = this;
