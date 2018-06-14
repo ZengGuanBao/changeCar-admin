@@ -21,23 +21,14 @@
                 <FormItem label="广告内容">
                     <Input v-model="addMalAd.content"></Input>
                 </FormItem>
-                <FormItem label="广告链接地址">
-                    <Input v-model="addMalAd.urlLink"></Input>
-                </FormItem>
                 <FormItem label="广告图片">
-                    <Upload :before-upload="handleUpload" action="/api/file">
-                        <Button type="ghost" icon="ios-cloud-upload-outline">上传图片</Button>
-                        <div v-if="file !== null">上传文件名: {{ addMalAd.sysImage = file.name }}</div>
+                    <Upload action="/api/file"  :format="['jpg','jpeg','png']"  :on-format-error="handleFormatError"  :on-success="handleSuccess"  :on-error="handleError">
+                        <span>请选择文件&nbsp;&nbsp;</span>
+                        <Button type="ghost" icon="ios-cloud-upload-outline">上传文件</Button>
                     </Upload>
                 </FormItem>
                 <FormItem label="是否隐藏">
                     <Checkbox v-model="addMalAd.status">隐藏</Checkbox>
-                </FormItem>
-                <FormItem label="icatid">
-                    <Input v-model="addMalAd.icatid"></Input>
-                </FormItem>
-                <FormItem label="adTypeStr">
-                    <Input v-model="addMalAd.adTypeStr"></Input>
                 </FormItem>
             </Form>
           </Modal>
@@ -65,23 +56,14 @@
                 <FormItem label="广告内容">
                     <Input v-model="putMalAd.content"></Input>
                 </FormItem>
-                <FormItem label="广告链接地址">
-                    <Input v-model="putMalAd.urlLink"></Input>
-                </FormItem>
                 <FormItem label="图片">
-                    <Upload :before-upload="handleUpload" action="/api/file">
-                        <Button type="ghost" icon="ios-cloud-upload-outline">上传图片</Button>
-                        <div v-if="file !== null">Upload file: {{ putMalAd.sysImage = file.name }}</div>
+                    <Upload action="/api/file"  :format="['jpg','jpeg','png']"  :on-format-error="handleFormatError"  :on-success="handleSuccess"  :on-error="handleError">
+                        <span>请选择文件&nbsp;&nbsp;</span>
+                        <Button type="ghost" icon="ios-cloud-upload-outline">上传文件</Button>
                     </Upload>
                 </FormItem>
                 <FormItem label="是否隐藏">
                     <Checkbox v-model="putMalAd.status">隐藏</Checkbox>
-                </FormItem>
-                <FormItem label="icatid">
-                    <Input v-model="putMalAd.icatid"></Input>
-                </FormItem>
-                <FormItem label="adTypeStr">
-                    <Input v-model="putMalAd.adTypeStr"></Input>
                 </FormItem>
             </Form>
           </Modal>
@@ -101,15 +83,15 @@ export default {
       addMalAd: {
         adId:0,
         adType:"",
-        adTypeStr:"",
+        adTypeStr: "",
         content:"",
         icatid:"NORMAL",
         sn:0,
         status: false,
-        sysDate:new Date(),
+        sysDate: new Date(),
         sysImage:"cd199346-3ff-47d9-a67d-db607382765c.jpeg",
         title:"",
-        urlLink: ""
+        urlLink: "http://193.112.160.227/api/file/"
       },
       putMalAd: {
         adId:4,
@@ -122,7 +104,7 @@ export default {
         sysDate:1528812280000,
         sysImage:"cd199346-3fff-47d9-a67d-db607382765c.jpeg",
         title:"第二广告",
-        urlLink: "string"
+        urlLink: "#"
       },
       page: {
         pageNum: 1,
@@ -187,7 +169,7 @@ export default {
                     this.$get('/malAd/' + params.row.adId)
                       .then(res => {
                         _this.putMalAd = res.data
-                        console.log(_this.putMalAd)
+                        // console.log(_this.putMalAd)
                       });
                   }
                 },
@@ -223,9 +205,12 @@ export default {
     },
     addSubmits () {
       let _this = this;
+      this.addMalAd.adTypeStr = this.addMalAd.adType;
+      this.addMalAd.urlLink = "http://193.112.160.227/api/file/" + this.addMalAd.sysImage;
+      this.addMalAd.icatid = "NORMAL"
       this.$post('/malAd', this.addMalAd)
         .then(res => {
-          console.log(res);
+          // console.log(res);
           _this.initMalAdStore()
         });
     },
@@ -242,14 +227,32 @@ export default {
     putOk () {
       this.putSubmits()
     },
+    handleFormatError(file) {
+      this.$Notice.warning({
+        title: "文件格式不正确",
+        desc: "文件 " + file.name + " 格式不正确，请选择图片文件。"
+      });
+    },
+    handleSuccess(evnet, file) {
+      this.$Notice.success({
+        title: "文件上传成功",
+        desc: "文件 " + file.name + " 上传成功。"
+      });
+    },
+    handleError(event, file) {
+      this.$Notice.error({
+        title: "文件上传失败",
+        desc: "文件 " + file.name + " 上传失败。"
+      });
+    },
     initMalAdStore () {
       let _this = this;
       this.$get('/malAd/' + this.page.pageNum + '/' + this.page.pageSize, this.params)
         .then(res => {
-          window.console.log(res);
+          // window.console.log(res);
           _this.tableData1 = res.data.list;
           _this.total = res.data.total;
-          console.log(_this.tableData1)
+          // console.log(_this.tableData1)
         });
     }
   },

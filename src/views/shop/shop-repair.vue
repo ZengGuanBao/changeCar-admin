@@ -40,9 +40,9 @@
         <tr>
 					<td>图片：</td>
 					<td>
-            <Upload :before-upload="handleUpload" action="/api/file">
-                <Button type="ghost" icon="ios-cloud-upload-outline">上传图片</Button>
-                <div v-if="file !== null">上传文件名: {{ params.storeImages = file.name }}</div>
+            <Upload action="/api/file"  :format="['jpg','jpeg','png']"  :on-format-error="handleFormatError"  :on-success="handleSuccess"  :on-error="handleError">
+                <span>请选择文件&nbsp;&nbsp;</span>
+                <Button type="ghost" icon="ios-cloud-upload-outline">上传文件</Button>
             </Upload>
 					</td>
 				</tr>
@@ -123,12 +123,26 @@ export default {
 
   },
   methods: {
+    handleFormatError(file) {
+      this.$Notice.warning({
+        title: "文件格式不正确",
+        desc: "文件 " + file.name + " 格式不正确，请选择图片文件。"
+      });
+    },
+    handleSuccess(evnet, file) {
+      this.$Notice.success({
+        title: "文件上传成功",
+        desc: "文件 " + file.name + " 上传成功。"
+      });
+    },
+    handleError(event, file) {
+      this.$Notice.error({
+        title: "文件上传失败",
+        desc: "文件 " + file.name + " 上传失败。"
+      });
+    },
     cityChange (data) {
       this.resetDate = data;
-    },
-    handleUpload (file) {
-      this.file = file;
-      return false;
     },
     clickMap (data) {
       this.params.x = data.point.lng

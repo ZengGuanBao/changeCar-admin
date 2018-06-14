@@ -22,7 +22,10 @@
                   </RadioGroup>
                 </FormItem>
                 <FormItem v-if="isAll === 'userIds'" label="接收系统消息的人员ID">
-                    <Input v-model="userIds"></Input>
+                    <Select v-model="userIds">
+                        <Option v-for="item in userIdsList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                    </Select>
+                    <!-- <Input v-model="userIds"></Input> -->
                 </FormItem>
             </Form>
           </Modal>
@@ -77,6 +80,7 @@ export default {
       },
       isAll: "isAll",
       userIds: "",
+      userIdsList: [],
       putMalSysMessage: {
         activatetime: "2018-06-13T02:36:13.999Z",
         content: "string",
@@ -204,6 +208,15 @@ export default {
           console.log(_this.tableData1)
         });
     },
+    initUserStore () {
+      let _this = this;
+      this.$get('/user/' + this.page.pageNum + '/' + this.page.pageSize)
+        .then(res => {
+          console.log(res.data);
+          
+          // _this.userIdsList.push()
+        });
+    },
     addSubmits () {
       let _this = this;
       this.$post('/malSysMessage', this.addMalSysMessage, this.isAll)
@@ -228,6 +241,7 @@ export default {
   },
   created () {
     this.initMalSysMessageStore();
+    this.initUserStore()
   }
 }
 </script>
