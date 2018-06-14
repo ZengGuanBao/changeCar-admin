@@ -10,17 +10,20 @@
           <Modal v-model="addMalSysMessageModal" title="发送系统消息" @on-ok="addOk" ok-text="发送">
             <Form :model="addMalSysMessage" label-position="left" :label-width="100">
                 <FormItem label="标题">
-                    <Input v-model="addMalSysMessage.title"></Input>
+                    <Input v-model="addMalSysMessage.title" disabled></Input>
                 </FormItem>
-                <FormItem label="图片">
-                    <Upload :before-upload="handleUpload" action="/api/file">
-                        <Button type="ghost" icon="ios-cloud-upload-outline">上传图片</Button>
-                        <div v-if="file !== null">Upload file: {{ addMalSysMessage.sysImage = file.name }}</div>
-                    </Upload>
-                </FormItem>  
                 <FormItem label="内容">
                     <Input v-model="addMalSysMessage.content"></Input>
-                </FormItem>               
+                </FormItem>
+                <FormItem label="发送给">
+                  <RadioGroup v-model="isAll">
+                      <label><Radio label="isAll"></Radio>（所有人）</label> 
+                      <label><Radio label="userIds"></Radio>（指定人员ID）</label> 
+                  </RadioGroup>
+                </FormItem>
+                <FormItem v-if="isAll === 'userIds'" label="接收系统消息的人员ID">
+                    <Input v-model="userIds"></Input>
+                </FormItem>
             </Form>
           </Modal>
         </div>
@@ -38,15 +41,9 @@
                 <FormItem label="标题">
                     <Input v-model="putMalSysMessage.title"></Input>
                 </FormItem>
-                <FormItem label="图片">
-                    <Upload :before-upload="handleUpload" action="/api/file">
-                        <Button type="ghost" icon="ios-cloud-upload-outline">上传图片</Button>
-                        <div v-if="file !== null">Upload file: {{ putMalSysMessage.sysImage = file.name }}</div>
-                    </Upload>
-                </FormItem>  
                 <FormItem label="内容">
                     <Input v-model="putMalSysMessage.content"></Input>
-                </FormItem>               
+                </FormItem>         
             </Form>
           </Modal>
         </div>
@@ -64,7 +61,7 @@ export default {
       putMalSysMessageModal: false,
       addMalSysMessage: {
         activatetime: new Date(),
-        content: "string",
+        content: "",
         icatid: "NORMAL",
         isSend: 1,
         msgid: 0,
@@ -78,6 +75,8 @@ export default {
         sysImage: "string",
         title: "系统消息"
       },
+      isAll: "isAll",
+      userIds: "",
       putMalSysMessage: {
         activatetime: "2018-06-13T02:36:13.999Z",
         content: "string",
@@ -118,20 +117,12 @@ export default {
           key: 'title'
         },
         {
-          title: '创建时间',
-          key: 'sysDate'
-        },
-        {
           title: '是否已读',
           key: 'readstatus'
         },
         {
-          title: '用户类型',
-          key: 'readstatus'
-        },
-        {
-          title: '消息图片',
-          key: 'sysImage'
+          title: '阅读用户',
+          key: 'receiveName'
         },
         {
           title: '内容',
@@ -201,6 +192,7 @@ export default {
     },
     changePage (index) {
       this.page.pageNum = index;
+      this.initMalSysMessageStore()
     },
     initMalSysMessageStore () {
       let _this = this;
@@ -214,7 +206,7 @@ export default {
     },
     addSubmits () {
       let _this = this;
-      this.$post('/malSysMessage', this.addMalSysMessage)
+      this.$post('/malSysMessage', this.addMalSysMessage, this.isAll)
         .then(res => {
           console.log(res);
           _this.initMalSysMessageStore();

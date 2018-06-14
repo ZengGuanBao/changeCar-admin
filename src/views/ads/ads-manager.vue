@@ -10,36 +10,38 @@
           <Modal v-model="addMalAdModal" title="新增广告" @on-ok="addOk" ok-text="添加">
             <Form :model="addMalAd" label-position="left" :label-width="100">
                 <FormItem label="广告类型">
-                    <Input v-model="addMalAd.adType"></Input>
+                  <RadioGroup v-model="addMalAd.adType">
+                      <Radio label="首页轮播广告"></Radio>
+                      <Radio label="其他"></Radio>
+                  </RadioGroup>
+                </FormItem>
+                <FormItem label="广告标题">
+                    <Input v-model="addMalAd.title"></Input>
+                </FormItem>
+                <FormItem label="广告内容">
+                    <Input v-model="addMalAd.content"></Input>
+                </FormItem>
+                <FormItem label="广告链接地址">
+                    <Input v-model="addMalAd.urlLink"></Input>
+                </FormItem>
+                <FormItem label="广告图片">
+                    <Upload :before-upload="handleUpload" action="/api/file" on-success="" >
+                        <Button type="ghost" icon="ios-cloud-upload-outline">上传图片</Button>
+                        <div v-if="file !== null">上传文件名: {{file.name }}</div>
+                    </Upload>
+                </FormItem>
+                <FormItem label="是否隐藏">
+                  <RadioGroup v-model="addMalAd.status">
+                      <Radio label="true"></Radio>隐藏
+                      <Radio label="false"></Radio>显示
+                  </RadioGroup>
+                </FormItem>
+                <FormItem label="icatid">
+                    <Input v-model="addMalAd.icatid"></Input>
                 </FormItem>
                 <FormItem label="adTypeStr">
                     <Input v-model="addMalAd.adTypeStr"></Input>
                 </FormItem>
-                <FormItem label="内容">
-                    <Input v-model="addMalAd.content"></Input>
-                </FormItem>
-                <FormItem label="链接地址">
-                    <Input v-model="addMalAd.urlLink"></Input>
-                </FormItem>
-                <FormItem label="排序">
-                    <Input v-model="addMalAd.sn"></Input>
-                </FormItem>
-                <FormItem label="用户类型">
-                    <Input v-model="addMalAd.icatid"></Input>
-                </FormItem>
-                <FormItem label="是否隐藏">
-                  <Switch v-model="addMalAd.status" @on-change="changeSwitch"></Switch>
-                  <!-- <Input v-model="putMalAd.status""></Input> -->
-                </FormItem>
-                <FormItem label="标题">
-                    <Input v-model="addMalAd.title"></Input>
-                </FormItem>
-                <FormItem label="图片">
-                    <Upload :before-upload="handleUpload" action="/api/file">
-                        <Button type="ghost" icon="ios-cloud-upload-outline">上传图片</Button>
-                        <div v-if="file !== null">Upload file: {{ addMalAd.sysImage = file.name }}</div>
-                    </Upload>
-                </FormItem>               
             </Form>
           </Modal>
         </div>
@@ -73,8 +75,10 @@
                     <Input v-model="putMalAd.icatid"></Input>
                 </FormItem>
                 <FormItem label="是否隐藏">
-                  <Switch v-model="putMalAd.status" @on-change="changeSwitch"></Switch>
-                  <!-- <Input v-model="putMalAd.status""></Input> -->
+                  <RadioGroup v-model="putMalAd.status">
+                      <Radio label="true"></Radio>隐藏
+                      <Radio label="false"></Radio>显示
+                  </RadioGroup>
                 </FormItem>
                 <FormItem label="图片">
                     <Upload :before-upload="handleUpload" action="/api/file">
@@ -108,7 +112,7 @@ export default {
         content:"",
         icatid:"NORMAL",
         sn:0,
-        status:false,
+        status:true,
         sysDate:new Date(),
         sysImage:"cd199346-3ff-47d9-a67d-db607382765c.jpeg",
         title:"",
