@@ -37,6 +37,15 @@
 						<Input v-model="params.link"  style="width: 300px"></Input>
 					</td>
 				</tr>
+        <tr>
+					<td>图片：</td>
+					<td>
+            <Upload :before-upload="handleUpload" action="/api/file">
+                <Button type="ghost" icon="ios-cloud-upload-outline">上传图片</Button>
+                <div v-if="file !== null">上传文件名: {{ params.storeImages = file.name }}</div>
+            </Upload>
+					</td>
+				</tr>
 				<tr>
 					<td>营业时间：</td>
 					<td>
@@ -84,6 +93,7 @@ export default {
   name: 'shop-repair',
   data () {
     return {
+      file: null,
       storeId: '',
       params: {
         rowCrtTs: 1516615557000,
@@ -115,6 +125,10 @@ export default {
   methods: {
     cityChange (data) {
       this.resetDate = data;
+    },
+    handleUpload (file) {
+      this.file = file;
+      return false;
     },
     clickMap (data) {
       this.params.x = data.point.lng

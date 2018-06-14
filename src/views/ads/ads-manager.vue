@@ -25,16 +25,13 @@
                     <Input v-model="addMalAd.urlLink"></Input>
                 </FormItem>
                 <FormItem label="广告图片">
-                    <Upload :before-upload="handleUpload" action="/api/file" on-success="" >
+                    <Upload :before-upload="handleUpload" action="/api/file">
                         <Button type="ghost" icon="ios-cloud-upload-outline">上传图片</Button>
-                        <div v-if="file !== null">上传文件名: {{file.name }}</div>
+                        <div v-if="file !== null">上传文件名: {{ addMalAd.sysImage = file.name }}</div>
                     </Upload>
                 </FormItem>
                 <FormItem label="是否隐藏">
-                  <RadioGroup v-model="addMalAd.status">
-                      <Radio label="true"></Radio>隐藏
-                      <Radio label="false"></Radio>显示
-                  </RadioGroup>
+                    <Checkbox v-model="addMalAd.status">隐藏</Checkbox>
                 </FormItem>
                 <FormItem label="icatid">
                     <Input v-model="addMalAd.icatid"></Input>
@@ -46,7 +43,7 @@
           </Modal>
         </div>
         <div class="add-list">
-            <Table :data="tableData1" :columns="tableColumns1" stripe id="table1"></Table>
+            <Table :data="tableData1" :columns="tableColumns1" stripe></Table>
             <div style="margin: 10px;overflow: hidden">
                 <div style="float: right;">
                     <Page :total="total" :page.pageNum="1" @on-change="changePage"></Page>
@@ -57,38 +54,34 @@
           <Modal v-model="putMalAdModal" title="修改广告" @on-ok="putOk" >
             <Form :model="putMalAd" label-position="left" :label-width="100">
                 <FormItem label="广告类型">
-                    <Input v-model="putMalAd.adType"></Input>
+                  <RadioGroup v-model="putMalAd.adType">
+                      <Radio label="首页轮播广告"></Radio>
+                      <Radio label="其他"></Radio>
+                  </RadioGroup>
                 </FormItem>
-                <FormItem label="adTypeStr">
-                    <Input v-model="putMalAd.adTypeStr"></Input>
+                <FormItem label="广告标题">
+                    <Input v-model="putMalAd.title"></Input>
                 </FormItem>
-                <FormItem label="内容">
+                <FormItem label="广告内容">
                     <Input v-model="putMalAd.content"></Input>
                 </FormItem>
-                <FormItem label="链接地址">
+                <FormItem label="广告链接地址">
                     <Input v-model="putMalAd.urlLink"></Input>
-                </FormItem>
-                <FormItem label="排序">
-                    <Input v-model="putMalAd.sn"></Input>
-                </FormItem>
-                <FormItem label="用户类型">
-                    <Input v-model="putMalAd.icatid"></Input>
-                </FormItem>
-                <FormItem label="是否隐藏">
-                  <RadioGroup v-model="putMalAd.status">
-                      <Radio label="true"></Radio>隐藏
-                      <Radio label="false"></Radio>显示
-                  </RadioGroup>
                 </FormItem>
                 <FormItem label="图片">
                     <Upload :before-upload="handleUpload" action="/api/file">
                         <Button type="ghost" icon="ios-cloud-upload-outline">上传图片</Button>
                         <div v-if="file !== null">Upload file: {{ putMalAd.sysImage = file.name }}</div>
                     </Upload>
-                    <!-- <Input v-model="malAd.sort"></Input> -->
                 </FormItem>
-                <FormItem label="标题">
-                    <Input v-model="putMalAd.title"></Input>
+                <FormItem label="是否隐藏">
+                    <Checkbox v-model="putMalAd.status">隐藏</Checkbox>
+                </FormItem>
+                <FormItem label="icatid">
+                    <Input v-model="putMalAd.icatid"></Input>
+                </FormItem>
+                <FormItem label="adTypeStr">
+                    <Input v-model="putMalAd.adTypeStr"></Input>
                 </FormItem>
             </Form>
           </Modal>
@@ -112,7 +105,7 @@ export default {
         content:"",
         icatid:"NORMAL",
         sn:0,
-        status:true,
+        status: false,
         sysDate:new Date(),
         sysImage:"cd199346-3ff-47d9-a67d-db607382765c.jpeg",
         title:"",
@@ -125,7 +118,7 @@ export default {
         content:"string",
         icatid:"NORMAL",
         sn:0,
-        status:false,
+        status: false,
         sysDate:1528812280000,
         sysImage:"cd199346-3fff-47d9-a67d-db607382765c.jpeg",
         title:"第二广告",
@@ -227,10 +220,6 @@ export default {
     },
     changePage (index) {
       this.page.pageNum = index;
-    },
-    changeSwitch (status) {
-      this.addMalAd.status = status;
-      this.putMalAd.status = status;
     },
     addSubmits () {
       let _this = this;
