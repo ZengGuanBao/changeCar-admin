@@ -8,7 +8,7 @@
         </div>
         <div class="add-list">
           <Upload
-              action="/file"
+              action="/api/file"
               :format="['jpg','jpeg','png']"
               :on-format-error="handleFormatError"
               :on-success="handleSuccess"
@@ -62,12 +62,12 @@ export default {
     },
     initMalSysMessageStore() {
       let _this = this;
-      this.$get("/file/" + "cd199346-3fff-47d9-a67d-db607382765c.jpeg").then(
-        res => {
-          // _this.srcImg = res;
-          // console.log(res);
-        }
-      );
+      // this.$get("/file/" + "cd199346-3fff-47d9-a67d-db607382765c.jpeg").then(
+      //   res => {
+      //     // _this.srcImg = res;
+      //     // console.log(res);
+      //   }
+      // );
     }
   },
   created() {
