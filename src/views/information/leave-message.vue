@@ -8,7 +8,7 @@
         </div>
         <div class="add-list">
           <Upload
-              action="/api/file"
+              action="/file"
               :format="['jpg','jpeg','png']"
               :on-format-error="handleFormatError"
               :on-success="handleSuccess"

@@ -17,15 +17,14 @@
                 </FormItem>
                 <FormItem label="发送给">
                   <RadioGroup v-model="isAll">
-                      <label><Radio label="isAll"></Radio>（所有人）</label> 
-                      <label><Radio label="userIds"></Radio>（指定人员ID）</label> 
+                      <Radio label="所有人"></Radio>
+                      <Radio label="指定人员ID"></Radio>
                   </RadioGroup>
                 </FormItem>
-                <FormItem v-if="isAll === 'userIds'" label="接收系统消息的人员ID">
-                    <Select v-model="userIds">
-                        <Option v-for="item in userIdsList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-                    </Select>
-                    <!-- <Input v-model="userIds"></Input> -->
+                <FormItem v-if="isAll === '指定人员ID'" label="接收系统消息的人员ID">
+                  <Select v-model="userIds" filterable multiple>
+                      <Option v-for="item in userIdsList" :value="item.iid" :key="item.value">{{ item.sfullname }}</Option>
+                  </Select>
                 </FormItem>
             </Form>
           </Modal>
@@ -78,24 +77,24 @@ export default {
         sysImage: "string",
         title: "系统消息"
       },
-      isAll: "isAll",
+      isAll: "所有人",
       userIds: "",
       userIdsList: [],
       putMalSysMessage: {
-        activatetime: "2018-06-13T02:36:13.999Z",
-        content: "string",
-        icatid: "NORMAL",
+        activatetime: "",
+        content: "",
+        icatid: "",
         isSend: 0,
         msgid: 0,
         readstatus: true,
         receiveId: 0,
-        receiveName: "string",
+        receiveName: "",
         sendId: 0,
-        sendName: "string",
+        sendName: "",
         status: true,
-        sysDate: "2018-06-13T02:36:13.999Z",
-        sysImage: "string",
-        title: "string"
+        sysDate: "",
+        sysImage: "",
+        title: ""
       },
       page: {
         pageNum: 1,
@@ -160,7 +159,6 @@ export default {
                     this.$get('/malSysMessage/' + params.row.msgid)
                       .then(res => {
                         _this.putMalSysMessage = res.data
-                        console.log(_this.putMalSysMessage)
                       });
                   }
                 },
@@ -187,13 +185,6 @@ export default {
     };
   },
   methods: {
-    handleAdd () {
-      //this.$router.push('/shortcut')
-    },
-    handleUpload (file) {
-      this.file = file;
-      return false;
-    },
     changePage (index) {
       this.page.pageNum = index;
       this.initMalSysMessageStore()
@@ -202,26 +193,26 @@ export default {
       let _this = this;
       this.$get('/malSysMessage/' + this.page.pageNum + '/' + this.page.pageSize)
         .then(res => {
-          console.log(res);
           _this.tableData1 = res.data.list;
           _this.total = res.data.total;
-          console.log(_this.tableData1)
         });
     },
     initUserStore () {
       let _this = this;
       this.$get('/user/' + this.page.pageNum + '/' + this.page.pageSize)
         .then(res => {
-          console.log(res.data);
-          
-          // _this.userIdsList.push()
+          console.log(res);
+          res.data.forEach( item => {
+            _this.userIdsList.push(item)
+            console.log(_this.userIdsList);
+          });
         });
     },
     addSubmits () {
       let _this = this;
-      this.$post('/malSysMessage', this.addMalSysMessage, this.isAll)
+      this.isAll === "所与人" ? this.isAll = "isAll": this.isAll="";
+      this.$post('/malSysMessage', this.addMalSysMessage,this.userIds, this.isAll )
         .then(res => {
-          console.log(res);
           _this.initMalSysMessageStore();
         });
     },

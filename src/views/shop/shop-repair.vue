@@ -40,8 +40,8 @@
         <tr>
 					<td>图片：</td>
 					<td>
-            <Upload action="/api/file"  :format="['jpg','jpeg','png']"  :on-format-error="handleFormatError"  :on-success="handleSuccess"  :on-error="handleError">
-                <span>请选择文件&nbsp;&nbsp;</span>
+            <Upload action="/api/file" multiple :format="['jpg','jpeg','png']"  :on-format-error="handleFormatError"  :on-success="handleSuccess"  :on-error="handleError">
+                <span>请选择图片(可以多选)&nbsp;&nbsp;</span>
                 <Button type="ghost" icon="ios-cloud-upload-outline">上传文件</Button>
             </Upload>
 					</td>

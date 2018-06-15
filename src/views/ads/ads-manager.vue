@@ -28,7 +28,7 @@
                     </Upload>
                 </FormItem>
                 <FormItem label="是否隐藏">
-                    <Checkbox v-model="addMalAd.status">隐藏</Checkbox>
+                    <Checkbox v-model="addMalAd.status">隐藏(选中指不显示此条广告)</Checkbox>
                 </FormItem>
             </Form>
           </Modal>
@@ -63,7 +63,7 @@
                     </Upload>
                 </FormItem>
                 <FormItem label="是否隐藏">
-                    <Checkbox v-model="putMalAd.status">隐藏</Checkbox>
+                    <Checkbox v-model="putMalAd.status">隐藏(选中指不显示此条广告)</Checkbox>
                 </FormItem>
             </Form>
           </Modal>
@@ -91,7 +91,7 @@ export default {
         sysDate: new Date(),
         sysImage:"cd199346-3ff-47d9-a67d-db607382765c.jpeg",
         title:"",
-        urlLink: "http://193.112.160.227/api/file/"
+        urlLink: ""
       },
       putMalAd: {
         adId:4,
@@ -124,6 +124,10 @@ export default {
         {
           title: '广告ID',
           key: 'adId'
+        },
+        {
+          title: '广告类型',
+          key: 'adType'
         },
         {
           title: '标题',
