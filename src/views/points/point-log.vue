@@ -5,6 +5,10 @@
 		<Input style="width: 200px" v-model="params.plMembername"></Input>
 		<label for="">电话号：</label>
 		<Input style="width: 200px" v-model="params.plMembername"></Input>
+        <label for="">类型：</label>
+        <Select clearable style="width:200px">
+            <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+        </Select>
 		<Button type="primary" @click="pointsLog">查询</Button>
 	</div>
 	<!--<div class="add-point-info">-->
@@ -209,13 +213,11 @@ export default {
                 return y + '-' + m + '-' + d;
             },
             changePage (index) {
-                // The simulated data is changed directly here, and the actual usage scenario should fetch the data from the server
-//              this.tableData1 = this.mockTableData1();
 				this.page.pageNum = index;
+                this.pointsLog()
             },
             pointsLog(){
                 let _this = this;
-                
                 this.$get('/userCenter/' + this.page.pageNum + '/' + this.page.pageSize,this.params)
                     .then(res => {                    
                     	_this.tableData1 = res.data.list; 
