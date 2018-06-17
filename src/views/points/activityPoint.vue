@@ -11,6 +11,32 @@
         </Select>
 		<!-- <Button type="primary" @click="pointsLog">查询</Button> -->
 	</div>
+  <div class="add-point-info">
+      <Button @click="addActivitypointsModal = true" type="success" href="javascipt:;">新增</Button>
+  </div>
+  <!-- 增加活动积分 -->
+  <div>
+    <Modal v-model="addActivitypointsModal" title="新增活动积分" @on-ok="addOk" ok-text="增加">
+      <Form :model="addActivitypoints" label-position="left" :label-width="100">
+          <FormItem label="活动名称">
+              <Input v-model="addActivitypoints.title"></Input>
+          </FormItem>
+          <FormItem label="活动描述">
+              <Input v-model="addActivitypoints.content"></Input>
+          </FormItem>
+          <FormItem label="活动积分">
+              <Input v-model="addActivitypoints.activitypoints"></Input>
+          </FormItem>
+          <FormItem label="活动时间设置">
+            <DatePicker v-model="addActivitypoints.startdate" :value="addActivitypoints.startdate" format="yyyy-MM-dd HH:mm" placeholder="开始时间" style="width: 200px"></DatePicker>
+            <DatePicker v-model="addActivitypoints.enddate" :value="addActivitypoints.enddate" format="yyyy-MM-dd HH:mm" placeholder="开始时间" style="width: 200px"></DatePicker>
+          </FormItem>
+          <FormItem label="是否立即启动">
+              <Checkbox v-model="addActivitypoints.activestatus">立即启动</Checkbox>
+          </FormItem>
+      </Form>
+    </Modal>
+  </div>
 	<!--表格部分-->
 	<Table :data="tableData1" :columns="tableColumns1" stripe></Table>
     <div style="margin: 10px;overflow: hidden">
@@ -18,7 +44,29 @@
             <Page :total="total" :page.pageNum="1" @on-change="changePage"></Page>
         </div>
     </div>
-    <!-- 修改用户积分操作  -->
+    <!-- 修改活动积分  -->
+    <div>
+    <Modal v-model="putActivitypointsModal" title="修改活动积分" @on-ok="putOk" ok-text="修改">
+      <Form :model="putActivitypoints" label-position="left" :label-width="100">
+          <FormItem label="活动名称">
+              <Input v-model="putActivitypoints.title"></Input>
+          </FormItem>
+          <FormItem label="活动描述">
+              <Input v-model="putActivitypoints.content"></Input>
+          </FormItem>
+          <FormItem label="活动积分">
+              <Input v-model="putActivitypoints.activitypoints"></Input>
+          </FormItem>
+          <FormItem label="活动时间设置">
+            <DatePicker v-model="putActivitypoints.startdate" :value="putActivitypoints.startdate" format="yyyy-MM-dd HH:mm" placeholder="开始时间" style="width: 200px"></DatePicker>
+            <DatePicker v-model="putActivitypoints.enddate" :value="putActivitypoints.enddate" format="yyyy-MM-dd HH:mm" placeholder="开始时间" style="width: 200px"></DatePicker>
+          </FormItem>
+          <FormItem label="是否立即启动">
+              <Checkbox v-model="putActivitypoints.activestatus">立即启动</Checkbox>
+          </FormItem>
+      </Form>
+    </Modal>
+  </div>
 </div>
 </template>
 
@@ -29,7 +77,30 @@ export default {
   name: "pointmanager",
   data() {
     return {
-      putMalAdModal: false,
+      addActivitypointsModal: false,
+      putActivitypointsModal: false,
+      addActivitypoints:{
+        activatetime: "2018-06-16T17:07:45.882Z",
+        activestatus: true,
+        activitypoints: 0,
+        content: "string",
+        enddate: "2018-06-16T17:07:45.882Z",
+        icatid: "NORMAL",
+        pointsActivityid: 0,
+        startdate: "2018-06-16T17:07:45.882Z",
+        title: "string"
+      },
+      putActivitypoints:{
+        activatetime: "2018-06-16T17:07:45.882Z",
+        activestatus: true,
+        activitypoints: 0,
+        content: "string",
+        enddate: "2018-06-16T17:07:45.882Z",
+        icatid: "NORMAL",
+        pointsActivityid: 0,
+        startdate: "2018-06-16T17:07:45.882Z",
+        title: "string"
+      },
       page: {
         pageNum: 1,
         pageSize: 10
@@ -66,11 +137,19 @@ export default {
         },
         {
           title: "活动开始时间",
-          key: "startdate"
+          key: "startdate",
+          minWidth: 100,
+          render: (h, params) => {
+            return h('span', moment(params.row.startdate).format('YYYY-MM-DD HH:MM'));
+          }
         },
         {
           title: "活动结束时间",
-          key: "enddate"
+          key: "enddate",
+          minWidth: 100,
+          render: (h, params) => {
+            return h('span', moment(params.row.enddate).format('YYYY-MM-DD HH:MM'));
+          }
         },
         {
           title: "操作",
@@ -90,7 +169,15 @@ export default {
                   },
                   on: {
                     click: () => {
-                    //   this.$router.push({ path: "addpoint/" + params.row.iid });
+                      this.putActivitypointsModal = true;
+                      let _this = this;
+                      this.$get('/pointsActivity/' + params.row.pointsActivityid)
+                        .then(res => {
+                          res.data.startdate = moment(res.data.startdate).format('YYYY-MM-DD HH:MM')
+                          res.data.enddate = moment(res.data.enddate).format('YYYY-MM-DD HH:MM')
+                          _this.putActivitypoints = res.data
+                          // console.log(_this.putActivitypoints.startdate)
+                      });
                     }
                   }
                 },
@@ -108,7 +195,15 @@ export default {
                   },
                   on: {
                     click: () => {
-                    //   this.$router.push({ path: "addpoint/" + params.row.iid });
+                      let _this = this;
+                      this.$get('/pointsActivity/' + params.row.pointsActivityid)
+                        .then(res => {
+                          _this.putActivitypoints = res.data
+                          _this.putActivitypoints.activestatus =true
+                          this.$put('/pointsActivity/' + params.row.pointsActivityid)
+                            .then(res => {});
+                          // console.log(_this.putActivitypoints)
+                      });
                     }
                   }
                 },
@@ -126,7 +221,11 @@ export default {
                   },
                   on: {
                     click: () => {
-                    //   this.$router.push({ path: "addpoint/" + params.row.iid });
+                      let _this = this;
+                      this.$del('/pointsActivity/' + params.row.pointsActivityid)
+                        .then(res => {
+                          _this.intiPointsActivity();
+                        });
                     }
                   }
                 },
@@ -139,16 +238,32 @@ export default {
     };
   },
   methods: {
-    handleAdd() {
-    //   this.$router.push("addpoint/1");
+    addSubmits () {
+      let _this = this;
+      this.addActivitypoints.icatid = "NORMAL"
+      this.$post('/pointsActivity', this.addActivitypoints)
+        .then(res => {
+          console.log(res);
+          _this.intiPointsActivity()
+        });
     },
-    formatDate(date) {
-      const y = date.getFullYear();
-      let m = date.getMonth() + 1;
-      m = m < 10 ? "0" + m : m;
-      let d = date.getDate();
-      d = d < 10 ? "0" + d : d;
-      return y + "-" + m + "-" + d;
+    addOk () {
+      this.addSubmits()
+    },
+    putSubmits () {
+      let _this = this;
+      this.putActivitypoints.icatid = "NORMAL"
+      this.$put('/pointsActivity/', this.putActivitypoints)
+        .then(res => {
+          console.log(res);
+          _this.intiPointsActivity()
+        });
+    },
+    putOk () {
+      this.putSubmits()
+    },
+    handleAdd() {
+      //   this.$router.push("addpoint/1");
     },
     changePage(index) {
       this.page.pageNum = index;
