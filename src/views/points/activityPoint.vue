@@ -1,7 +1,7 @@
 <template>
 <div class="point-manager">
 	<div class="point-manage-btn">
-		<label for="">用户名：</label>
+		<label for="">活动名称：</label>
 		<Input style="width: 200px" v-model="params.plMembername"></Input>
 		<label for="">电话号：</label>
 		<Input style="width: 200px" v-model="params.plMembername"></Input>
@@ -9,7 +9,7 @@
         <Select clearable style="width:200px">
             <!-- <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option> -->
         </Select>
-		<Button type="primary" @click="pointsLog">查询</Button>
+		<!-- <Button type="primary" @click="pointsLog">查询</Button> -->
 	</div>
 	<!--表格部分-->
 	<Table :data="tableData1" :columns="tableColumns1" stripe></Table>
@@ -48,46 +48,29 @@ export default {
           }
         },
         {
-          title: "账号",
-          key: "userDetails.slastlogin",
-          minWidth: 100,
-          render: (h, params) => {
-            return h("span", params.row.userDetails.slastlogin);
-          }
+          title: "活动积分ID",
+          key: "pointsActivityid",
+          minWidth: 100
         },
         {
-          title: "用户名",
-          key: "userDetails.sfullname",
-          render: (h, params) => {
-            return h("span", params.row.userDetails.sfullname);
-          }
+          title: "活动名称",
+          key: "title"
         },
         {
-          title: "电话",
-          key: "userDetails.urgentphone",
-          render: (h, params) => {
-            return h("span", params.row.userDetails.urgentphone);
-          }
-        },
-        {
-          title: "总积分",
-          key: "changePoint"
-        },
-        {
-          title: "换车积分(可提现)",
-          key: "changePoint"
-        },
-        {
-          title: "充值积分",
-          key: "rechargePoint"
-        },
-        {
-          title: "提现积分",
-          key: "depositPoint"
+          title: "活动描述",
+          key: "content"
         },
         {
           title: "活动积分",
-          key: "activityPoint"
+          key: "activitypoints"
+        },
+        {
+          title: "活动开始时间",
+          key: "startdate"
+        },
+        {
+          title: "活动结束时间",
+          key: "enddate"
         },
         {
           title: "操作",
@@ -107,11 +90,47 @@ export default {
                   },
                   on: {
                     click: () => {
-                      this.$router.push({ path: "addpoint/" + params.row.iid });
+                    //   this.$router.push({ path: "addpoint/" + params.row.iid });
                     }
                   }
                 },
-                "查看"
+                "修改"
+              ),
+              h(
+                "Button",
+                {
+                  props: {
+                    type: "primary",
+                    size: "small"
+                  },
+                  style: {
+                    marginRight: "5px"
+                  },
+                  on: {
+                    click: () => {
+                    //   this.$router.push({ path: "addpoint/" + params.row.iid });
+                    }
+                  }
+                },
+                "启动"
+              ),
+              h(
+                "Button",
+                {
+                  props: {
+                    type: "primary",
+                    size: "small"
+                  },
+                  style: {
+                    marginRight: "5px"
+                  },
+                  on: {
+                    click: () => {
+                    //   this.$router.push({ path: "addpoint/" + params.row.iid });
+                    }
+                  }
+                },
+                "停用"
               )
             ]);
           }
@@ -121,7 +140,7 @@ export default {
   },
   methods: {
     handleAdd() {
-      this.$router.push("addpoint/1");
+    //   this.$router.push("addpoint/1");
     },
     formatDate(date) {
       const y = date.getFullYear();
@@ -133,12 +152,12 @@ export default {
     },
     changePage(index) {
       this.page.pageNum = index;
-      this.pointsLog();
+      this.intiPointsActivity();
     },
-    pointsLog() {
+    intiPointsActivity() {
       let _this = this;
       this.$get(
-        "/userCenter/" + this.page.pageNum + "/" + this.page.pageSize,
+        "/pointsActivity/" + this.page.pageNum + "/" + this.page.pageSize,
         this.params
       ).then(res => {
         _this.tableData1 = res.data.list;
@@ -148,7 +167,7 @@ export default {
     }
   },
   created() {
-    this.pointsLog();
+    this.intiPointsActivity();
   },
   watch: {
     /**
@@ -156,7 +175,7 @@ export default {
      */
     page: {
       handler(val, oldVal) {
-        this.pointsLog();
+        this.intiPointsActivity();
       },
       deep: true
     }
