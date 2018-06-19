@@ -1,3 +1,4 @@
+/* eslint-disable */
 export default {
     'zh-CN': {
         home: '首页',

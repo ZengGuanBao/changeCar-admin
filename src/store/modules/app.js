@@ -1,3 +1,4 @@
+/* eslint-disable */
 import {otherRouter, appRouter} from '@/router/router';
 import Util from '@/libs/util';
 import Cookies from 'js-cookie';
@@ -37,7 +38,6 @@ const app = {
         setTagsList (state, list) {
             state.tagsList.push(...list);
         },
-        
         updateMenulist (state) {
             let accessCode = parseInt(Cookies.get('access'));
             let menuList = [];

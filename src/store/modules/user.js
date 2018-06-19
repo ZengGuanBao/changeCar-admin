@@ -1,3 +1,4 @@
+/* eslint-disable */
 import Cookies from 'js-cookie';
 
 const user = {
