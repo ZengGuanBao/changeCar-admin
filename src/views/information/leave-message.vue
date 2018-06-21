@@ -8,11 +8,14 @@
         </div>
         <div class="add-list">
           <Upload
-              action="/api/file"
+              action="/api/api/file"
+              :before-upload = "handleBeforeUpload"
               :format="['jpg','jpeg','png']"
               :on-format-error="handleFormatError"
               :on-success="handleSuccess"
               :on-error="handleError"
+              :with-credentials="true"
+              :data="taken"
           >
               <span>请选择文件&nbsp;&nbsp;</span>
               <Button type="ghost" icon="ios-cloud-upload-outline">上传文件</Button>
@@ -24,16 +27,20 @@
 /* eslint-disable */
 import moment from "moment";
 export default {
-  name: "adsmanager",
   data() {
     return {
+      upFile: "",
       page: {
         pageNum: 1,
         pageSize: 10
-      }
+      },
+      taken:{token:"Bearer%20eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdWJqZWN0IiwiYXVkIjoiYWRtaW4iLCJtZW51Q29kZSI6WzBdLCJpc3MiOiJjZ2hzaXIiLCJleHAiOjE1Mjk1NDQzNTcxODgsInVzZXJEZXRhaWxzIjoie1wiYWNjb3VudE5vbkV4cGlyZWRcIjp0cnVlLFwiYWNjb3VudE5vbkxvY2tlZFwiOnRydWUsXCJhZG1pblwiOnRydWUsXCJhdXRob3JpdGllc1wiOlt7XCJhdXRob3JpdHlcIjpcIi8qKiYwXCIsXCJtZXRob2RcIjpcIkFMTFwiLFwidXJsXCI6XCIvKipcIn1dLFwiYml6VXNlcklkXCI6NjMwOSxcImNyZWF0ZVRpbWVcIjoxNTI5Mzc1MTkwMDAwLFwiY3JlYXRlVXNlclwiOlwi57O757uf5rWL6K-VXCIsXCJjcmVkZW50aWFsc05vbkV4cGlyZWRcIjp0cnVlLFwiZW1haWxcIjpcInFxQHFxLmNvbVwiLFwiZW5hYmxlZFwiOnRydWUsXCJpZFwiOlwiZWE0Y2E0NGJiZjUyNGFmZGJhYjJjNWZiZTU5M2RhMzFcIixcIm1hbFVzZXJcIjp7XCJpY2F0aWRcIjpcIk1FUkNIQU5UXCIsXCJpaWRcIjo2MzA5LFwiaWxvZ2luY291bnRcIjo3LFwic2VtYWlsXCI6XCJxcUBxcS5jb21cIixcInNmdWxsbmFtZVwiOlwi57O757uf566h55CG5ZGYXCIsXCJzbGFzdGxvZ2luXCI6MTUyOTQ1Nzk1Njk2OSxcInNwYXNzd29yZFwiOlwiKioqKioqKioqXCIsXCJzc2V4XCI6XCLlpbNcIixcInN1c2VybmFtZVwiOlwiYWRtaW5cIixcInVzZXJUeXBlXCI6XCJFTlRFUlBSSVNFXCJ9LFwibWVudUNvZGVcIjpbMF0sXCJuaWNrTmFtZVwiOlwi57O757uf566h55CG5ZGYXCIsXCJwYXNzd29yZFwiOlwiJDJhJDEwJHVCaTYuQlhRSklrSnp0UlUyMDJMM3VldEg3NGM4YVdxWmp0NkNrT3hGaWxvbThFaUZHYVdtXCIsXCJzZXhcIjpcIuWls1wiLFwidXBkYXRlVGltZVwiOjE1MjkzNzUxOTAwMDAsXCJ1c2VZblwiOnRydWUsXCJ1c2VyTmFtZVwiOlwiYWRtaW5cIixcInVzZXJuYW1lXCI6XCJhZG1pblwifSIsImlhdCI6MTUyOTQ1Nzk1NzE4OCwiYXV0aG9yaXRpZXMiOiJbe1wiYXV0aG9yaXR5XCI6XCIvKiomMFwiLFwibWV0aG9kXCI6XCJBTExcIixcInVybFwiOlwiLyoqXCJ9XSIsImp0aSI6IjEiLCJ1c2VybmFtZSI6ImFkbWluIn0.tx8TKCze_9QTQYaDgnreS7BzpQSg3Kw3V3mrTPHTFJM"}
     };
   },
   methods: {
+    handleBeforeUpload () {
+      // this.uploadUrl = ''
+    },
     handleFormatError(file) {
       this.$Notice.warning({
         title: "文件格式不正确",
